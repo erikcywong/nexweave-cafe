@@ -1,0 +1,2598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEBI Coffee - 雾化水培低碳咖啡</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-green: #006241; /* 星巴克风格绿色 */
+            --secondary-green: #1e3932;
+            --accent-gold: #cba258;
+            --light-beige: #f2f0eb;
+            --dark-text: #2d2d2d;
+            --light-text: #ffffff;
+            --gray-bg: #f9f9f9;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            color: var(--dark-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent-gold);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-text);
+            font-weight: 600;
+            font-size: 16px;
+            transition: var(--transition);
+            padding: 8px 0;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-green);
+        }
+        
+        .nav-links a.active {
+            color: var(--primary-green);
+        }
+        
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--accent-gold);
+            border-radius: 2px;
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .download-app {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+        
+        .download-app:hover {
+            background-color: var(--secondary-green);
+            transform: translateY(-2px);
+        }
+        
+        .download-app i {
+            margin-right: 8px;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-green);
+        }
+        
+        /* 主要内容区域 */
+        .main-content {
+            margin-top: 80px;
+            transition: var(--transition);
+        }
+        
+        .section {
+            padding: 100px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* 英雄区域样式 */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            background-color: var(--accent-gold);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .cta-button:hover {
+            background-color: #d4b15f;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cta-button i {
+            margin-left: 10px;
+        }
+        
+        /* 关于我们样式 */
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 60px;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .about-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        
+        .about-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-card i {
+            font-size: 40px;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+        }
+        
+        .about-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-green);
+        }
+        
+        /* 体验馆样式 */
+        .experience-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .experience-image {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .experience-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .experience-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .experience-details h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary-green);
+        }
+        
+        .experience-features {
+            list-style: none;
+            margin-top: 20px;
+        }
+        
+        .experience-features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .experience-features i {
+            color: var(--accent-gold);
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .reservation-form {
+            background-color: var(--light-beige);
+            padding: 40px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary-green);
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+        
+        .form-button {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+        }
+        
+        .form-button:hover {
+            background-color: var(--secondary-green);
+        }
+        
+        /* 寄养计划样式 */
+        .foster-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .plan-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .plan-card.featured {
+            border: 2px solid var(--accent-gold);
+            transform: scale(1.05);
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .plan-card.featured:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+        
+        .plan-badge {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background-color: var(--accent-gold);
+            color: white;
+            padding: 8px 30px;
+            transform: rotate(45deg);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .plan-icon {
+            font-size: 50px;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+        }
+        
+        .plan-price {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin: 20px 0;
+            font-weight: 700;
+        }
+        
+        .plan-price span {
+            font-size: 1rem;
+            color: #777;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .plan-features li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .plan-features i {
+            color: var(--accent-gold);
+            margin-right: 10px;
+        }
+        
+        .plan-button {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .plan-button:hover {
+            background-color: var(--secondary-green);
+        }
+        
+        .foster-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 50px;
+        }
+        
+        .foster-action-btn {
+            background-color: var(--light-beige);
+            color: var(--primary-green);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+        
+        .foster-action-btn:hover {
+            background-color: var(--primary-green);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .foster-action-btn i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        /* 低碳平台样式 */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .dashboard-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .dashboard-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+        }
+        
+        .dashboard-card h3 i {
+            margin-right: 10px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        
+        /* 新闻动态样式 */
+        .news-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .news-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        
+        .news-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .news-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .news-card:hover .news-image img {
+            transform: scale(1.05);
+        }
+        
+        .news-content {
+            padding: 25px;
+        }
+        
+        .news-date {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .news-date i {
+            margin-right: 8px;
+            color: var(--accent-gold);
+        }
+        
+        .news-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary-green);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .news-title:hover {
+            color: var(--accent-gold);
+        }
+        
+        .news-summary {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .news-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .news-details.active {
+            max-height: 500px;
+            margin-top: 20px;
+        }
+        
+        /* 联系我们样式 */
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-green);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--light-beige);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-green);
+            font-size: 20px;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: var(--secondary-green);
+            color: white;
+            padding: 60px 5% 30px;
+            margin-top: 80px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-links h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--accent-gold);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-gold);
+            padding-left: 5px;
+        }
+        
+        .social-icons {
+            display: flex;
+            margin-top: 20px;
+        }
+        
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-right: 15px;
+            color: white;
+            transition: var(--transition);
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--accent-gold);
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        /* 子页面样式 */
+        .subpage {
+            padding: 40px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .subpage h2 {
+            font-size: 2rem;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+        }
+        
+        .subpage-content {
+            line-height: 1.8;
+        }
+        
+        .app-dev-list, .feature-list {
+            list-style: none;
+            margin-top: 30px;
+        }
+        
+        .app-dev-list li, .feature-list li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .app-dev-list li:before, .feature-list li:before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+        }
+        
+        /* 低碳平台子页面样式 */
+        .data-insight-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .data-chart {
+            background-color: var(--light-beige);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .data-analysis {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .data-analysis h4 {
+            color: var(--primary-green);
+            margin-bottom: 15px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .experience-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                padding: 20px;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-links.active li {
+                margin: 15px 0;
+            }
+            
+            .data-insight-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section {
+                padding: 80px 5%;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .foster-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .foster-action-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+        
+        /* 搜索框样式 */
+        .search-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(0, 98, 65, 0.1);
+        }
+        
+        /* 标签样式 */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .tag {
+            background-color: var(--light-beige);
+            color: var(--primary-green);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        
+        .tag:hover {
+            background-color: var(--primary-green);
+            color: white;
+        }
+        
+        .tag.active {
+            background-color: var(--primary-green);
+            color: white;
+        }
+        
+        /* 地图样式 */
+        .map-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            margin-top: 30px;
+        }
+        
+        .map-title {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .map-nodes {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .map-node {
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .map-node:hover {
+            background-color: var(--light-beige);
+            transform: translateY(-5px);
+        }
+        
+        .node-icon {
+            width: 70px;
+            height: 70px;
+            background-color: var(--light-beige);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: var(--primary-green);
+            font-size: 30px;
+            transition: var(--transition);
+        }
+        
+        .map-node:hover .node-icon {
+            background-color: var(--primary-green);
+            color: white;
+        }
+        
+        .node-info {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-top: 20px;
+            border-left: 4px solid var(--accent-gold);
+        }
+        
+        .node-info.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* 返回按钮样式 */
+        .back-button {
+            background-color: var(--secondary-green);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            margin-top: 30px;
+        }
+        
+        .back-button:hover {
+            background-color: var(--primary-green);
+            transform: translateY(-2px);
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                JEBI Coffee
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" class="nav-link active" data-section="home">首页</a></li>
+                <li><a href="#" class="nav-link" data-section="about">关于我们</a></li>
+                <li><a href="#" class="nav-link" data-section="experience">体验馆</a></li>
+                <li><a href="#" class="nav-link" data-section="foster">寄养计划</a></li>
+                <li><a href="#" class="nav-link" data-section="platform">低碳平台</a></li>
+                <li><a href="#" class="nav-link" data-section="news">新闻动态</a></li>
+                <li><a href="#" class="nav-link" data-section="contact">联系我们</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <button class="download-app" id="downloadAppBtn">
+                    <i class="fas fa-mobile-alt"></i> 下载App
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <!-- 首页 -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <h1>雾化水培咖啡的未来</h1>
+                <p>全球创新的雾化水培技术，融合低碳咖啡连锁店运营模式，从种子到咖啡杯全程透明可溯源，为您带来前所未有的咖啡体验。</p>
+                <button class="cta-button" id="reservationBtn">
+                    预约体验馆参观 <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 关于我们 -->
+        <section id="about" class="section">
+            <h2 class="section-title">关于我们</h2>
+            <p class="section-subtitle">JEBI Coffee 采用全球领先的雾化水培技术，重新定义咖啡种植与消费体验，实现从种子到咖啡杯的全程可溯源低碳经济模式。</p>
+            
+            <div class="about-content">
+                <div class="about-card">
+                    <i class="fas fa-tint"></i>
+                    <h3>雾化水培技术</h3>
+                    <p>采用先进的雾化水培系统，比传统种植节水90%，生长速度提升30%，产量增加30%，完全无需农药，实现真正的清洁种植。</p>
+                </div>
+                
+                <div class="about-card">
+                    <i class="fas fa-leaf"></i>
+                    <h3>垂直种植模式</h3>
+                    <p>突破地理和气候限制，在城市中心实现咖啡种植，展示咖啡树的不同生长阶段。</p>
+                </div>
+                
+                <div class="about-card">
+                    <i class="fas fa-qrcode"></i>
+                    <h3>全程可溯源</h3>
+                    <p>扫描二维码即可追踪咖啡豆从种植仓、加工、烘焙到咖啡馆的完整旅程，包括物流过程，实现完全透明化。</p>
+                </div>
+                
+                <div class="about-card">
+                    <i class="fas fa-recycle"></i>
+                    <h3>低碳经济平台</h3>
+                    <p>咖啡馆内所有用品均来自自家建立的低碳经济总裁平台，客户可通过平台购物，参与完整的低碳经济循环。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 体验馆 -->
+        <section id="experience" class="section">
+            <h2 class="section-title">体验馆参观</h2>
+            <p class="section-subtitle">亲身感受雾化水培咖啡的魅力，见证咖啡树从幼苗到成熟的全过程，体验从种子到咖啡杯的完整旅程。</p>
+            
+            <div class="experience-grid">
+                <div class="experience-image">
+                    <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="JEBI Coffee体验馆">
+                </div>
+                
+                <div class="experience-details">
+                    <h3>体验馆特色</h3>
+                    <p>JEBI Coffee体验馆展示了从种子到咖啡杯的完整过程，包括种植仓、加工区、烘焙区和咖啡馆。馆内展示咖啡树的不同生长阶段。</p>
+                    
+                    <ul class="experience-features">
+                        <li><i class="fas fa-check-circle"></i> 亲眼见证咖啡树生长全过程</li>
+                        <li><i class="fas fa-check-circle"></i> 体验扫描二维码溯源功能</li>
+                        <li><i class="fas fa-check-circle"></i> 参观低碳经济平台产品展示</li>
+                        <li><i class="fas fa-check-circle"></i> 品尝最新鲜的雾化水培咖啡</li>
+                        <li><i class="fas fa-check-circle"></i> 了解个人咖啡树寄养计划</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="reservation-form">
+                <h3>预约参观体验馆</h3>
+                <form id="reservationForm">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">电子邮箱</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">联系电话</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date">预约日期</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="time">预约时间</label>
+                        <select id="time" required>
+                            <option value="">选择时间</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:30">11:30 AM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:30">3:30 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="guests">参观人数</label>
+                        <input type="number" id="guests" min="1" max="10" value="1" required>
+                    </div>
+                    
+                    <button type="submit" class="form-button">提交预约</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 寄养计划 -->
+        <section id="foster" class="section">
+            <h2 class="section-title">个人咖啡树寄养计划</h2>
+            <p class="section-subtitle">拥有属于自己的咖啡树，体验从种植到品尝的全过程。我们提供寄养服务，您可以通过手机App远程观察成长，咖啡树的所有成果专属您个人。</p>
+            
+            <div class="foster-plans">
+                <div class="plan-card">
+                    <div class="plan-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>基础寄养计划</h3>
+                    <div class="plan-price">¥100<span>/月</span></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 专属咖啡树幼苗</li>
+                        <li><i class="fas fa-check"></i> 基础雾化种植系统</li>
+                        <li><i class="fas fa-check"></i> 每月生长报告</li>
+                        <li><i class="fas fa-check"></i> App远程观察</li>
+                        <li><i class="fas fa-check"></i> 每年500g咖啡豆收成</li>
+                    </ul>
+                    <button class="plan-button foster-action" data-action="foster">
+                        立即寄养
+                    </button>
+                </div>
+                
+                <div class="plan-card featured">
+                    <div class="plan-badge">最受欢迎</div>
+                    <div class="plan-icon">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <h3>高级寄养计划</h3>
+                    <div class="plan-price">¥200<span>/月</span></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 优质咖啡树幼苗</li>
+                        <li><i class="fas fa-check"></i> 高级雾化种植系统</li>
+                        <li><i class="fas fa-check"></i> 每周生长报告与视频</li>
+                        <li><i class="fas fa-check"></i> App远程实时监控</li>
+                        <li><i class="fas fa-check"></i> 每年1000g咖啡豆收成</li>
+                        <li><i class="fas fa-check"></i> 专属RWA资产证书</li>
+                    </ul>
+                    <button class="plan-button foster-action" data-action="foster">
+                        立即寄养
+                    </button>
+                </div>
+                
+                <div class="plan-card">
+                    <div class="plan-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>家庭种植套装</h3>
+                    <div class="plan-price">¥1,800<span>/套</span></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 家用雾化种植系统</li>
+                        <li><i class="fas fa-check"></i> 3株咖啡树幼苗</li>
+                        <li><i class="fas fa-check"></i> 全年营养液套装</li>
+                        <li><i class="fas fa-check"></i> 种植指导手册</li>
+                        <li><i class="fas fa-check"></i> 专业烘焙服务折扣</li>
+                    </ul>
+                    <button class="plan-button foster-action" data-action="purchase">
+                        购买套装
+                    </button>
+                </div>
+            </div>
+            
+            <div class="foster-actions">
+                <button class="foster-action-btn" data-action="foster">
+                    <i class="fas fa-tree"></i> 立即寄养咖啡树
+                </button>
+                <button class="foster-action-btn" data-action="purchase">
+                    <i class="fas fa-shopping-cart"></i> 购买套装
+                </button>
+                <button class="foster-action-btn" data-action="monitor">
+                    <i class="fas fa-desktop"></i> 查看远程监控
+                </button>
+                <button class="foster-action-btn" data-action="rwa">
+                    <i class="fas fa-coins"></i> 了解RWA资产权益
+                </button>
+            </div>
+        </section>
+
+        <!-- 低碳平台 -->
+        <section id="platform" class="section">
+            <h2 class="section-title">低碳平台数据洞察</h2>
+            <p class="section-subtitle">基于我们的低碳经济平台，实时追踪市场动态、用户增长和碳减排成果，为可持续咖啡经济提供数据支持。</p>
+            
+            <!-- 搜索框 -->
+            <div class="search-container">
+                <input type="text" class="search-box" id="searchBox" placeholder="搜索市场数据、趋势分析..." onkeypress="handleSearchKeypress(event)">
+            </div>
+            
+            <!-- 趋势标签 -->
+            <div class="tags" id="trendTags">
+                <span class="tag active" data-trend="all">全部</span>
+                <span class="tag" data-trend="market">市场增长</span>
+                <span class="tag" data-trend="user">用户增长</span>
+                <span class="tag" data-trend="carbon">碳减排</span>
+                <span class="tag" data-trend="financial">财务数据</span>
+                <span class="tag" data-trend="regional">区域分析</span>
+            </div>
+            
+            <div class="dashboard">
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-chart-line"></i> 低碳咖啡市场增长</h3>
+                    <div class="chart-container">
+                        <canvas id="marketGrowthChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-users"></i> 寄养服务用户增长</h3>
+                    <div class="chart-container">
+                        <canvas id="userGrowthChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-leaf"></i> 碳减排成果</h3>
+                    <div class="chart-container">
+                        <canvas id="carbonReductionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 地图交互 -->
+            <div class="map-container">
+                <h3 class="map-title">JEBI Coffee全球节点分布</h3>
+                <div class="map-nodes">
+                    <div class="map-node" data-node="shanghai">
+                        <div class="node-icon">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <h4>上海体验馆</h4>
+                        <p>旗舰店</p>
+                    </div>
+                    
+                    <div class="map-node" data-node="beijing">
+                        <div class="node-icon">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <h4>北京分店</h4>
+                        <p>种植展示中心</p>
+                    </div>
+                    
+                    <div class="map-node" data-node="shenzhen">
+                        <div class="node-icon">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <h4>深圳分店</h4>
+                        <p>科技体验店</p>
+                    </div>
+                    
+                    <div class="map-node" data-node="hangzhou">
+                        <div class="node-icon">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <h4>杭州种植中心</h4>
+                        <p>雾化水培基地</p>
+                    </div>
+                </div>
+                
+                <div id="nodeInfoContainer">
+                    <!-- 节点信息会动态显示在这里 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 新闻动态 -->
+        <section id="news" class="section">
+            <h2 class="section-title">新闻动态</h2>
+            <p class="section-subtitle">了解JEBI Coffee最新动态、行业资讯和低碳咖啡经济前沿信息。</p>
+            
+            <div class="news-container">
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="雾化水培技术突破">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="far fa-calendar"></i> 2025年6月15日
+                        </div>
+                        <h3 class="news-title">JEBI Coffee雾化水培技术获国际创新奖</h3>
+                        <p class="news-summary">我们的雾化水培咖啡种植技术在柏林国际农业科技展上荣获"可持续农业创新奖"，标志着该技术在咖啡种植领域的突破性进展。</p>
+                        <div class="news-details" id="news1-details">
+                            <p>JEBI Coffee的雾化水培技术在全球农业科技领域引起广泛关注。该技术比传统种植节水90%，生长速度提升30%，产量增加30%，完全无需农药，实现了咖啡种植的颠覆性创新。</p>
+                            <p>评委会特别指出，JEBI Coffee将雾化水培技术与城市咖啡连锁店相结合的模式，为可持续农业和城市食品供应链提供了全新解决方案。该技术已在中国多个城市成功应用，计划在未来三年内推广到全球20个主要城市。</p>
+                            <p>获奖后，JEBI Coffee宣布将扩大研发投入，进一步优化雾化水培系统的能效，并与多家国际机构合作，推动该技术在更多作物上的应用。</p>
+                        </div>
+                        <button class="tag" onclick="toggleNewsDetails('news1-details')">阅读更多</button>
+                    </div>
+                </div>
+                
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="低碳经济平台上线">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="far fa-calendar"></i> 2025年5月22日
+                        </div>
+                        <h3 class="news-title">JEBI低碳经济平台正式上线，首月交易额突破千万</h3>
+                        <p class="news-summary">JEBI Coffee旗下低碳经济总裁平台正式上线运营，整合咖啡种植、加工、零售全产业链，首月交易额突破1000万元人民币。</p>
+                        <div class="news-details" id="news2-details">
+                            <p>JEBI低碳经济平台是一个整合了咖啡全产业链的数字化平台，涵盖咖啡树寄养、咖啡豆交易、低碳产品零售、碳积分交易等多个板块。平台上线首月，注册用户超过5万人，交易额突破1000万元。</p>
+                            <p>平台最具创新性的是RWA（真实世界资产）数字化功能，用户拥有的咖啡树可以作为数字资产进行交易或收藏。每棵咖啡树都对应一个NFT，记录其生长数据、碳减排贡献和产出价值。</p>
+                            <p>JEBI创始人表示，该平台的目标是构建一个完全透明、可溯源的咖啡经济生态系统，让消费者不仅是咖啡的购买者，更是咖啡生产的参与者和受益者。</p>
+                        </div>
+                        <button class="tag" onclick="toggleNewsDetails('news2-details')">阅读更多</button>
+                    </div>
+                </div>
+                
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="碳中和认证">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="far fa-calendar"></i> 2025年4月10日
+                        </div>
+                        <h3 class="news-title">JEBI Coffee获得全球首个咖啡产业碳中和认证</h3>
+                        <p class="news-summary">经过严格评估，JEBI Coffee获得国际碳中和组织颁发的全球首个咖啡产业碳中和认证，其雾化水培模式碳减排效果显著。</p>
+                        <div class="news-details" id="news3-details">
+                            <p>JEBI Coffee的碳中和认证涵盖了从种植、加工、运输到零售的全产业链。评估显示，与传统咖啡种植相比，JEBI的雾化水培模式减少碳排放达75%，主要得益于节水、无农药、本地化生产和垂直种植等特点。</p>
+                            <p>认证机构特别指出，JEBI Coffee的个人咖啡树寄养计划创新性地将碳减排与消费者参与相结合。每棵寄养咖啡树每年可抵消约15kg二氧化碳，用户可以获得相应的碳积分，用于兑换产品或服务。</p>
+                            <p>获得认证后，JEBI Coffee宣布将启动"百万咖啡树碳减排计划"，目标在未来五年内通过寄养计划种植100万棵咖啡树，预计每年可抵消1.5万吨二氧化碳。</p>
+                        </div>
+                        <button class="tag" onclick="toggleNewsDetails('news3-details')">阅读更多</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系我们 -->
+        <section id="contact" class="section">
+            <h2 class="section-title">联系我们</h2>
+            <p class="section-subtitle">欢迎体验JEBI Coffee的雾化水培咖啡，如有任何问题或合作意向，请随时联系我们。</p>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>联系信息</h3>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <h4>电话/微信</h4>
+                            <p>+86 15800222338</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4>电子邮箱</h4>
+                            <p>erik.wong@Jebi.space</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <h4>营业时间</h4>
+                            <p>周一至周日: 8:00 AM - 10:00 PM</p>
+                            <p>体验馆参观: 需提前预约</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reservation-form">
+                    <h3>发送消息</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="contactName">姓名</label>
+                            <input type="text" id="contactName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactEmail">电子邮箱</label>
+                            <input type="email" id="contactEmail" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactSubject">主题</label>
+                            <input type="text" id="contactSubject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactMessage">消息</label>
+                            <textarea id="contactMessage" rows="5" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="form-button">发送消息</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- App开发子页面 -->
+        <div id="appSubpage" class="subpage" style="display: none;">
+            <h2>JEBI Coffee App 开发进展</h2>
+            <div class="subpage-content">
+                <p>我们的移动应用程序正在积极开发中，将为您提供全方位的咖啡树管理和咖啡体验服务。以下是目前开发的主要功能模块：</p>
+                
+                <ul class="app-dev-list">
+                    <li><strong>远程监控系统</strong>：实时查看寄养咖啡树的生长状态，包括湿度、光照、营养液浓度等数据。</li>
+                    <li><strong>生长曲线分析</strong>：生成专属咖啡树的生长曲线图，这些数据将作为RWA（真实世界资产）的一部分，版权归您个人所有。</li>
+                    <li><strong>溯源扫描功能</strong>：扫描咖啡包装上的二维码，查看从种子到咖啡杯的完整旅程。</li>
+                    <li><strong>碳积分系统</strong>：跟踪您的咖啡树产生的碳减排量，兑换产品或服务。</li>
+                    <li><strong>NFT资产管理</strong>：管理您咖啡树对应的NFT资产，支持交易、收藏和展示。</li>
+                    <li><strong>预约与服务</strong>：在线预约体验馆参观、咖啡加工、烘焙等服务。</li>
+                    <li><strong>低碳商城</strong>：浏览和购买低碳经济平台的产品。</li>
+                </ul>
+                
+                <h3>开发技术栈</h3>
+                <ul class="app-dev-list">
+                    <li><strong>前端框架</strong>：React Native，支持iOS和Android双平台</li>
+                    <li><strong>后端服务</strong>：Node.js + Express，RESTful API设计</li>
+                    <li><strong>数据库</strong>：MongoDB + Redis缓存</li>
+                    <li><strong>区块链集成</strong>：以太坊侧链，智能合约管理RWA资产</li>
+                    <li><strong>物联网连接</strong>：MQTT协议，实时连接雾化种植系统</li>
+                    <li><strong>推送服务</strong>：Firebase Cloud Messaging</li>
+                </ul>
+                
+                <h3>开发时间表</h3>
+                <ul class="app-dev-list">
+                    <li><strong>2025年7-8月</strong>：UI/UX设计完成，核心功能开发</li>
+                    <li><strong>2025年9月</strong>：Alpha测试版本，内部测试</li>
+                    <li><strong>2025年10月</strong>：Beta测试版本，限量用户测试</li>
+                    <li><strong>2025年11月</strong>：正式版发布，上架App Store和Google Play</li>
+                </ul>
+                
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="back-button" id="closeAppSubpageBtn">
+                        <i class="fas fa-arrow-left"></i> 返回主站
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 寄养计划子页面 -->
+        <div id="fosterSubpage" class="subpage" style="display: none;">
+            <h2>个人咖啡树寄养计划详情</h2>
+            <div class="subpage-content">
+                <p>JEBI Coffee的个人咖啡树寄养计划让您拥有属于自己的咖啡树，体验从种植到品尝的全过程。以下是计划详情：</p>
+                
+                <h3>寄养服务内容</h3>
+                <ul class="feature-list">
+                    <li><strong>专属咖啡树</strong>：您将拥有一棵专属的咖啡树，种植在我们的雾化水培系统中。</li>
+                    <li><strong>专业养护</strong>：我们的专业团队负责日常养护，确保咖啡树健康生长。</li>
+                    <li><strong>远程监控</strong>：通过手机App实时查看咖啡树的生长状态和环境数据。</li>
+                    <li><strong>定期报告</strong>：每月收到咖啡树的生长报告和照片/视频更新。</li>
+                    <li><strong>成果专属</strong>：咖啡树的所有产出（咖啡豆）完全属于您个人。</li>
+                    <li><strong>加工服务</strong>：我们提供咖啡豆加工、烘焙等一系列服务，您只需支付相应的服务费。</li>
+                </ul>
+                
+                <h3>RWA（真实世界资产）权益</h3>
+                <p>您的咖啡树将作为RWA资产进行数字化：</p>
+                <ul class="feature-list">
+                    <li>每棵咖啡树对应一个唯一的NFT证书</li>
+                    <li>生长曲线数据版权归您个人所有</li>
+                    <li>可以在我们的NFT平台进行交易或收藏</li>
+                    <li>碳减排贡献记录在区块链上，可验证不可篡改</li>
+                </ul>
+                
+                <h3>碳中和服务</h3>
+                <p>参与寄养计划，您也为碳中和做出了贡献：</p>
+                <ul class="feature-list">
+                    <li>每棵寄养咖啡树每年可抵消约15kg二氧化碳</li>
+                    <li>您将获得相应的碳积分，可用于兑换产品或服务</li>
+                    <li>碳减排数据通过第三方机构认证</li>
+                </ul>
+                
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="back-button" id="closeFosterSubpageBtn" style="margin-right: 20px;">
+                        <i class="fas fa-arrow-left"></i> 返回寄养计划
+                    </button>
+                    <button class="cta-button" id="startFosterBtn">
+                        立即开始寄养
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 购买套装子页面 -->
+        <div id="purchaseSubpage" class="subpage" style="display: none;">
+            <h2>家庭种植套装详情</h2>
+            <div class="subpage-content">
+                <p>JEBI Coffee家庭种植套装让您在家中或办公室享受种植咖啡的乐趣，体验从种子到咖啡杯的完整过程。</p>
+                
+                <h3>套装包含内容</h3>
+                <ul class="feature-list">
+                    <li><strong>家用雾化种植系统</strong>：尺寸：40×40×120cm，智能控制面板，LED生长灯</li>
+                    <li><strong>咖啡树幼苗</strong>：3株优质阿拉比卡咖啡树幼苗，已生长6个月</li>
+                    <li><strong>营养液套装</strong>：12个月用量的专用营养液，包含所有必需微量元素</li>
+                    <li><strong>智能监控设备</strong>：温湿度传感器、光照传感器、摄像头</li>
+                    <li><strong>种植指导手册</strong>：详细种植指南和故障排除手册</li>
+                    <li><strong>App接入权限</strong>：一年免费App高级功能使用权</li>
+                </ul>
+                
+                <h3>技术规格</h3>
+                <ul class="feature-list">
+                    <li><strong>电源</strong>：AC 100-240V，最大功率150W</li>
+                    <li><strong>水箱容量</strong>：5升，支持自动补水提醒</li>
+                    <li><strong>控制系统</strong>：Wi-Fi连接，支持手机App远程控制</li>
+                    <li><strong>灯光系统</strong>：全光谱LED，可调节光照强度和周期</li>
+                    <li><strong>雾化系统</strong>：超声波雾化，雾粒直径1-5微米</li>
+                </ul>
+                
+                <h3>预期产量</h3>
+                <ul class="feature-list">
+                    <li>种植后12-18个月开始结果</li>
+                    <li>每株咖啡树每年可产300-500克咖啡豆</li>
+                    <li>套装3株咖啡树预计年产1-1.5公斤咖啡豆</li>
+                    <li>足够制作60-90杯优质咖啡</li>
+                </ul>
+                
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="back-button" id="closePurchaseSubpageBtn" style="margin-right: 20px;">
+                        <i class="fas fa-arrow-left"></i> 返回寄养计划
+                    </button>
+                    <button class="cta-button" id="buyKitBtn">
+                        立即购买套装
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 远程监控子页面 -->
+        <div id="monitorSubpage" class="subpage" style="display: none;">
+            <h2>远程监控系统演示</h2>
+            <div class="subpage-content">
+                <p>JEBI Coffee的远程监控系统让您随时随地观察寄养咖啡树的生长状态。以下是系统的主要功能：</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 30px 0;">
+                    <div style="background-color: var(--light-beige); padding: 20px; border-radius: 10px;">
+                        <h4><i class="fas fa-tachometer-alt"></i> 实时数据监控</h4>
+                        <ul>
+                            <li>环境温度：24.5°C</li>
+                            <li>相对湿度：65%</li>
+                            <li>光照强度：1200 lux</li>
+                            <li>营养液pH值：6.2</li>
+                            <li>营养液浓度：1.8 mS/cm</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background-color: var(--light-beige); padding: 20px; border-radius: 10px;">
+                        <h4><i class="fas fa-chart-line"></i> 生长曲线</h4>
+                        <p>您的咖啡树生长速度超出平均水平15%</p>
+                        <p>过去30天高度增长：8.2cm</p>
+                        <p>叶片数量增加：12片</p>
+                    </div>
+                </div>
+                
+                <div style="background-color: white; border-radius: 10px; padding: 20px; box-shadow: var(--card-shadow); margin: 30px 0;">
+                    <h4><i class="fas fa-camera"></i> 实时图像</h4>
+                    <div style="background-color: #e9e9e9; height: 200px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 20px 0;">
+                        <p><i class="fas fa-video" style="font-size: 40px; color: #aaa;"></i></p>
+                    </div>
+                    <p style="text-align: center;">实时视频流将在App正式版中提供</p>
+                </div>
+                
+                <h3>历史数据查询</h3>
+                <p>您可以查看咖啡树从种植开始的所有历史数据：</p>
+                <ul class="feature-list">
+                    <li>每日生长数据记录</li>
+                    <li>环境参数变化趋势</li>
+                    <li>养护操作记录</li>
+                    <li>异常事件警报历史</li>
+                </ul>
+                
+                <h3>警报与通知</h3>
+                <p>系统会在以下情况发送通知：</p>
+                <ul class="feature-list">
+                    <li>环境参数超出正常范围</li>
+                    <li>需要添加营养液</li>
+                    <li>咖啡树进入关键生长期</li>
+                    <li>病虫害预警</li>
+                    <li>咖啡豆成熟可采收</li>
+                </ul>
+                
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="back-button" id="closeMonitorSubpageBtn">
+                        <i class="fas fa-arrow-left"></i> 返回主站
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- RWA资产权益子页面 -->
+        <div id="rwaSubpage" class="subpage" style="display: none;">
+            <h2>RWA资产权益详情</h2>
+            <div class="subpage-content">
+                <p>JEBI Coffee创新性地将真实世界的咖啡树资产数字化，创建了独特的RWA（Real World Asset）资产体系。</p>
+                
+                <h3>什么是RWA资产？</h3>
+                <p>RWA（真实世界资产）是指将物理世界中的资产通过区块链技术进行数字化表示。在JEBI Coffee生态中，每一棵寄养咖啡树都对应一个独一无二的数字资产。</p>
+                
+                <h3>您的权益</h3>
+                <ul class="feature-list">
+                    <li><strong>数字所有权</strong>：每棵咖啡树对应一个NFT证书，证明您对该咖啡树的所有权</li>
+                    <li><strong>生长数据版权</strong>：咖啡树的生长曲线、环境数据等归您个人所有</li>
+                    <li><strong>碳积分收益</strong>：咖啡树产生的碳减排量转化为碳积分，可交易或兑换</li>
+                    <li><strong>产出收益权</strong>：咖啡树产出的咖啡豆100%归您所有</li>
+                    <li><strong>资产增值潜力</strong>：随着咖啡树生长和咖啡豆产出，资产价值可能增长</li>
+                </ul>
+                
+                <h3>交易与流通</h3>
+                <ul class="feature-list">
+                    <li><strong>NFT交易平台</strong>：您可以在JEBI NFT平台交易您的咖啡树资产</li>
+                    <li><strong>部分所有权</strong>：支持将一棵咖啡树的权益拆分为多个份额进行交易</li>
+                    <li><strong>租赁市场</strong>：可以暂时出租咖啡树的碳积分收益权</li>
+                    <li><strong>质押借贷</strong>：使用咖啡树资产作为抵押进行借贷</li>
+                </ul>
+                
+                <h3>碳积分系统</h3>
+                <ul class="feature-list">
+                    <li>每棵咖啡树每年产生约15-20个碳积分（每个积分代表1kg CO₂减排）</li>
+                    <li>碳积分可在JEBI平台兑换产品或服务</li>
+                    <li>碳积分可出售给其他企业或个人用于碳中和</li>
+                    <li>所有碳积分交易记录在区块链上，公开透明可验证</li>
+                </ul>
+                
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="back-button" id="closeRwaSubpageBtn">
+                        <i class="fas fa-arrow-left"></i> 返回寄养计划
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 低碳平台子页面 -->
+        <div id="dataSubpage" class="subpage" style="display: none;">
+            <h2 id="dataSubpageTitle">数据洞察详情</h2>
+            <div class="subpage-content">
+                <div id="dataSubpageContent">
+                    <!-- 内容会通过JavaScript动态加载 -->
+                </div>
+                
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="back-button" id="closeDataSubpageBtn">
+                        <i class="fas fa-arrow-left"></i> 返回低碳平台
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                <div class="footer-logo">
+                    <i class="fas fa-seedling"></i>
+                    JEBI Coffee
+                </div>
+                <p>全球创新的雾化水培咖啡种植技术，融合低碳咖啡连锁店运营模式，重新定义从种子到咖啡杯的体验。</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-weixin"></i></a>
+                    <a href="#"><i class="fab fa-weibo"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="#" class="footer-nav-link" data-section="home">首页</a></li>
+                    <li><a href="#" class="footer-nav-link" data-section="about">关于我们</a></li>
+                    <li><a href="#" class="footer-nav-link" data-section="experience">体验馆</a></li>
+                    <li><a href="#" class="footer-nav-link" data-section="foster">寄养计划</a></li>
+                    <li><a href="#" class="footer-nav-link" data-section="platform">低碳平台</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h4>服务与支持</h4>
+                <ul>
+                    <li><a href="#" class="footer-nav-link" data-section="news">新闻动态</a></li>
+                    <li><a href="#" class="footer-nav-link" data-section="contact">联系我们</a></li>
+                    <li><a href="#" id="footerAppLink">App下载</a></li>
+                    <li><a href="#">常见问题</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h4>联系方式</h4>
+                <ul>
+                    <li><i class="fas fa-phone"></i> +86 15800222338</li>
+                    <li><i class="fas fa-envelope"></i> erik.wong@Jebi.space</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>保留所有权 © 2025 JEBI Coffee. 保留所有权利。</p>
+        </div>
+    </footer>
+
+    <script>
+        // SPA导航功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航元素
+            const navLinks = document.querySelectorAll('.nav-link, .footer-nav-link');
+            const sections = document.querySelectorAll('.section');
+            const mainContent = document.querySelector('.main-content');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const navLinksContainer = document.getElementById('navLinks');
+            
+            // 子页面元素
+            const appSubpage = document.getElementById('appSubpage');
+            const fosterSubpage = document.getElementById('fosterSubpage');
+            const purchaseSubpage = document.getElementById('purchaseSubpage');
+            const monitorSubpage = document.getElementById('monitorSubpage');
+            const rwaSubpage = document.getElementById('rwaSubpage');
+            const dataSubpage = document.getElementById('dataSubpage');
+            const downloadAppBtn = document.getElementById('downloadAppBtn');
+            const footerAppLink = document.getElementById('footerAppLink');
+            const closeAppSubpageBtn = document.getElementById('closeAppSubpageBtn');
+            const closeFosterSubpageBtn = document.getElementById('closeFosterSubpageBtn');
+            const closePurchaseSubpageBtn = document.getElementById('closePurchaseSubpageBtn');
+            const closeMonitorSubpageBtn = document.getElementById('closeMonitorSubpageBtn');
+            const closeRwaSubpageBtn = document.getElementById('closeRwaSubpageBtn');
+            const closeDataSubpageBtn = document.getElementById('closeDataSubpageBtn');
+            const startFosterBtn = document.getElementById('startFosterBtn');
+            const buyKitBtn = document.getElementById('buyKitBtn');
+            const reservationBtn = document.getElementById('reservationBtn');
+            
+            // 寄养计划按钮
+            const fosterActionBtns = document.querySelectorAll('.foster-action, .foster-action-btn');
+            
+            // 低碳平台标签
+            const trendTags = document.querySelectorAll('.tag[data-trend]');
+            
+            // 当前活动部分
+            let currentSection = 'home';
+            let currentSubpage = null;
+            
+            // 初始化图表
+            initCharts();
+            
+            // 初始化地图节点交互
+            initMapNodes();
+            
+            // 初始化低碳平台数据内容
+            initDataSubpages();
+            
+            // 导航点击事件
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    
+                    if (sectionId && sectionId !== currentSection) {
+                        // 隐藏所有子页面
+                        hideAllSubpages();
+                        
+                        // 显示对应部分
+                        showSection(sectionId);
+                        
+                        // 更新导航活动状态
+                        updateNavActiveState(sectionId);
+                        
+                        // 更新当前部分
+                        currentSection = sectionId;
+                        
+                        // 移动端关闭菜单
+                        if (window.innerWidth <= 992) {
+                            navLinksContainer.classList.remove('active');
+                        }
+                    }
+                });
+            });
+            
+            // 移动端菜单切换
+            mobileMenuBtn.addEventListener('click', function() {
+                navLinksContainer.classList.toggle('active');
+            });
+            
+            // 首页预约按钮点击事件
+            reservationBtn.addEventListener('click', function() {
+                showSection('experience');
+                updateNavActiveState('experience');
+                currentSection = 'experience';
+                
+                // 平滑滚动到预约表单
+                setTimeout(() => {
+                    document.querySelector('.reservation-form').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }, 100);
+            });
+            
+            // 下载App按钮点击事件
+            downloadAppBtn.addEventListener('click', showAppSubpage);
+            footerAppLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showAppSubpage();
+            });
+            
+            // 寄养计划按钮点击事件
+            fosterActionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.getAttribute('data-action');
+                    
+                    switch(action) {
+                        case 'foster':
+                            showFosterSubpage();
+                            break;
+                        case 'purchase':
+                            showPurchaseSubpage();
+                            break;
+                        case 'monitor':
+                            showMonitorSubpage();
+                            break;
+                        case 'rwa':
+                            showRwaSubpage();
+                            break;
+                        default:
+                            // 按钮没有指定action属性，根据文本判断
+                            const btnText = this.textContent.trim();
+                            if (btnText.includes('寄养')) {
+                                showFosterSubpage();
+                            } else if (btnText.includes('套装')) {
+                                showPurchaseSubpage();
+                            } else if (btnText.includes('监控')) {
+                                showMonitorSubpage();
+                            } else if (btnText.includes('RWA') || btnText.includes('资产')) {
+                                showRwaSubpage();
+                            }
+                    }
+                });
+            });
+            
+            // 低碳平台标签点击事件
+            trendTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    const trend = this.getAttribute('data-trend');
+                    
+                    // 更新活动标签
+                    trendTags.forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // 如果不是"全部"标签，显示对应的数据子页面
+                    if (trend !== 'all') {
+                        showDataSubpage(trend);
+                    }
+                });
+            });
+            
+            // 关闭子页面按钮点击事件
+            closeAppSubpageBtn.addEventListener('click', function() {
+                hideAllSubpages();
+                showSection(currentSection);
+            });
+            
+            closeFosterSubpageBtn.addEventListener('click', function() {
+                hideAllSubpages();
+                showSection('foster');
+                updateNavActiveState('foster');
+                currentSection = 'foster';
+            });
+            
+            closePurchaseSubpageBtn.addEventListener('click', function() {
+                hideAllSubpages();
+                showSection('foster');
+                updateNavActiveState('foster');
+                currentSection = 'foster';
+            });
+            
+            closeMonitorSubpageBtn.addEventListener('click', function() {
+                hideAllSubpages();
+                showSection(currentSection);
+            });
+            
+            closeRwaSubpageBtn.addEventListener('click', function() {
+                hideAllSubpages();
+                showSection('foster');
+                updateNavActiveState('foster');
+                currentSection = 'foster';
+            });
+            
+            closeDataSubpageBtn.addEventListener('click', function() {
+                hideAllSubpages();
+                showSection('platform');
+                updateNavActiveState('platform');
+                currentSection = 'platform';
+            });
+            
+            // 开始寄养按钮点击事件
+            startFosterBtn.addEventListener('click', function() {
+                hideAllSubpages();
+                showSection('foster');
+                updateNavActiveState('foster');
+                currentSection = 'foster';
+                
+                // 显示成功消息
+                alert('寄养申请已提交！我们的客服将在24小时内与您联系确认详情。');
+            });
+            
+            // 购买套装按钮点击事件
+            buyKitBtn.addEventListener('click', function() {
+                hideAllSubpages();
+                showSection('foster');
+                updateNavActiveState('foster');
+                currentSection = 'foster';
+                
+                // 显示成功消息
+                alert('购买申请已提交！我们的客服将联系您确认订单详情和配送安排。');
+            });
+            
+            // 表单提交事件
+            document.getElementById('reservationForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('预约已提交！我们将尽快与您确认参观时间。');
+                this.reset();
+            });
+            
+            document.getElementById('contactForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('消息已发送！我们将尽快回复您。');
+                this.reset();
+            });
+            
+            // 显示指定部分
+            function showSection(sectionId) {
+                // 隐藏所有部分
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // 显示目标部分
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    
+                    // 平滑滚动到顶部
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+            
+            // 更新导航活动状态
+            function updateNavActiveState(sectionId) {
+                navLinks.forEach(link => {
+                    if (link.getAttribute('data-section') === sectionId) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+            
+            // 显示App子页面
+            function showAppSubpage() {
+                hideAllSections();
+                hideAllSubpages();
+                appSubpage.style.display = 'block';
+                currentSubpage = 'app';
+            }
+            
+            // 显示寄养计划子页面
+            function showFosterSubpage() {
+                hideAllSections();
+                hideAllSubpages();
+                fosterSubpage.style.display = 'block';
+                currentSubpage = 'foster';
+            }
+            
+            // 显示购买套装子页面
+            function showPurchaseSubpage() {
+                hideAllSections();
+                hideAllSubpages();
+                purchaseSubpage.style.display = 'block';
+                currentSubpage = 'purchase';
+            }
+            
+            // 显示远程监控子页面
+            function showMonitorSubpage() {
+                hideAllSections();
+                hideAllSubpages();
+                monitorSubpage.style.display = 'block';
+                currentSubpage = 'monitor';
+            }
+            
+            // 显示RWA资产权益子页面
+            function showRwaSubpage() {
+                hideAllSections();
+                hideAllSubpages();
+                rwaSubpage.style.display = 'block';
+                currentSubpage = 'rwa';
+            }
+            
+            // 显示数据子页面
+            function showDataSubpage(trend) {
+                hideAllSections();
+                hideAllSubpages();
+                
+                // 设置子页面标题
+                const titleMap = {
+                    'market': '低碳咖啡市场增长分析',
+                    'user': '寄养服务用户增长分析',
+                    'carbon': '碳减排成果分析',
+                    'financial': '财务数据分析',
+                    'regional': '区域分析报告'
+                };
+                
+                document.getElementById('dataSubpageTitle').textContent = titleMap[trend] || '数据洞察详情';
+                
+                // 加载对应的内容
+                loadDataSubpageContent(trend);
+                
+                dataSubpage.style.display = 'block';
+                currentSubpage = 'data-' + trend;
+            }
+            
+            // 隐藏所有部分
+            function hideAllSections() {
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                mainContent.style.display = 'none';
+            }
+            
+            // 隐藏所有子页面
+            function hideAllSubpages() {
+                const subpages = [appSubpage, fosterSubpage, purchaseSubpage, monitorSubpage, rwaSubpage, dataSubpage];
+                subpages.forEach(subpage => {
+                    if (subpage) subpage.style.display = 'none';
+                });
+                mainContent.style.display = 'block';
+                currentSubpage = null;
+            }
+            
+            // 搜索功能
+            window.handleSearchKeypress = function(e) {
+                if (e.key === 'Enter') {
+                    const searchTerm = document.getElementById('searchBox').value;
+                    if (searchTerm.trim()) {
+                        alert(`搜索: ${searchTerm}\n此功能将在完整版中实现`);
+                        document.getElementById('searchBox').value = '';
+                    }
+                }
+            };
+            
+            // 窗口滚动时更新导航活动状态
+            window.addEventListener('scroll', function() {
+                if (window.innerWidth > 992 && currentSubpage === null) {
+                    let current = '';
+                    const scrollPos = window.scrollY + 100;
+                    
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        const sectionHeight = section.clientHeight;
+                        
+                        if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                            current = section.id;
+                        }
+                    });
+                    
+                    if (current && current !== currentSection) {
+                        updateNavActiveState(current);
+                        currentSection = current;
+                    }
+                }
+            });
+        });
+        
+        // 初始化图表
+        function initCharts() {
+            // 低碳咖啡市场增长图表
+            const marketCtx = document.getElementById('marketGrowthChart').getContext('2d');
+            new Chart(marketCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2022', '2023', '2024', '2025', '2026预测'],
+                    datasets: [{
+                        label: '市场规模 (亿元)',
+                        data: [12, 18, 28, 45, 70],
+                        borderColor: '#006241',
+                        backgroundColor: 'rgba(0, 98, 65, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 寄养服务用户增长图表
+            const userCtx = document.getElementById('userGrowthChart').getContext('2d');
+            new Chart(userCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                    datasets: [{
+                        label: '新增用户数',
+                        data: [120, 190, 300, 500, 700, 900],
+                        backgroundColor: '#cba258',
+                        borderColor: '#b89447',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 碳减排成果图表
+            const carbonCtx = document.getElementById('carbonReductionChart').getContext('2d');
+            new Chart(carbonCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['节水减排', '无农药减排', '本地化运输减排', '能源优化减排'],
+                    datasets: [{
+                        data: [40, 25, 20, 15],
+                        backgroundColor: [
+                            '#006241',
+                            '#1e3932',
+                            '#cba258',
+                            '#8a6e3e'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 初始化地图节点交互
+        function initMapNodes() {
+            const mapNodes = document.querySelectorAll('.map-node');
+            const nodeInfoContainer = document.getElementById('nodeInfoContainer');
+            
+            // 节点信息数据
+            const nodeData = {
+                shanghai: {
+                    title: "上海体验馆 (旗舰店)",
+                    content: "位于上海浦东新区创新科技园，占地面积2000平方米，包含完整的雾化水培展示系统、咖啡加工区和品尝区。旗舰店日均接待游客300人次，每月举办咖啡文化讲座和种植体验活动。",
+                    stats: "开业时间: 2024年3月 | 寄养咖啡树: 1200棵 | 月碳减排: 1.5吨"
+                },
+                beijing: {
+                    title: "北京分店 (种植展示中心)",
+                    content: "北京分店专注于雾化水培技术的展示与教育，设有咖啡树不同生长阶段的展示系统。中心与多所高校合作开展农业科技研究项目。",
+                    stats: "开业时间: 2024年8月 | 寄养咖啡树: 800棵 | 月碳减排: 1.0吨"
+                },
+                shenzhen: {
+                    title: "深圳分店 (科技体验店)",
+                    content: "深圳分店融合科技与咖啡文化，配备最先进的数字化监控系统和互动体验设备。顾客可以通过VR技术体验咖啡种植全过程，并通过区块链技术追踪咖啡豆来源。",
+                    stats: "开业时间: 2024年11月 | 寄养咖啡树: 950棵 | 月碳减排: 1.2吨"
+                },
+                hangzhou: {
+                    title: "杭州种植中心 (雾化水培基地)",
+                    content: "杭州种植中心是JEBI Coffee的主要生产研发基地，占地5000平方米，拥有200套雾化水培系统，年产量可达10吨咖啡豆。中心同时承担新种植技术研发和员工培训功能。",
+                    stats: "投产时间: 2023年9月 | 种植系统: 200套 | 年产量: 10吨咖啡豆"
+                }
+            };
+            
+            mapNodes.forEach(node => {
+                node.addEventListener('click', function() {
+                    const nodeId = this.getAttribute('data-node');
+                    const data = nodeData[nodeId];
+                    
+                    // 移除所有节点的活动状态
+                    mapNodes.forEach(n => {
+                        n.style.backgroundColor = '';
+                    });
+                    
+                    // 添加当前节点活动状态
+                    this.style.backgroundColor = 'rgba(203, 162, 88, 0.1)';
+                    
+                    // 显示节点信息
+                    nodeInfoContainer.innerHTML = `
+                        <div class="node-info active">
+                            <h4>${data.title}</h4>
+                            <p>${data.content}</p>
+                            <div style="background-color: #f2f0eb; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                                <strong>关键数据:</strong> ${data.stats}
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+            
+            // 默认显示上海节点信息
+            if (mapNodes.length > 0) {
+                mapNodes[0].click();
+            }
+        }
+        
+        // 初始化低碳平台数据子页面内容
+        function initDataSubpages() {
+            // 数据子页面内容
+            window.dataSubpageContents = {
+                market: `
+                    <div class="data-insight-container">
+                        <div class="data-chart">
+                            <h4>低碳咖啡市场增长趋势</h4>
+                            <p>2022-2026年低碳咖啡市场规模预测（单位：亿元）</p>
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="marketDetailChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="data-analysis">
+                            <h4>市场分析</h4>
+                            <ul class="feature-list">
+                                <li>2025年市场规模预计达45亿元，同比增长60%</li>
+                                <li>消费者对可持续咖啡的需求年增长35%</li>
+                                <li>雾化水培技术占低碳咖啡市场份额的28%</li>
+                                <li>一线城市是主要消费市场，占比65%</li>
+                                <li>企业采购增长迅速，年增长率达120%</li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+                user: `
+                    <div class="data-insight-container">
+                        <div class="data-chart">
+                            <h4>寄养服务用户增长趋势</h4>
+                            <p>2025年1-6月新增寄养用户数</p>
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="userDetailChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="data-analysis">
+                            <h4>用户分析</h4>
+                            <ul class="feature-list">
+                                <li>6月新增用户900人，环比增长28%</li>
+                                <li>用户留存率：3个月留存率85%，6个月留存率72%</li>
+                                <li>用户分布：一线城市占68%，二线城市占22%</li>
+                                <li>用户年龄：25-40岁占75%，40岁以上占18%</li>
+                                <li>用户平均消费：高级计划用户占比62%</li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+                carbon: `
+                    <div class="data-insight-container">
+                        <div class="data-chart">
+                            <h4>碳减排成果分布</h4>
+                            <p>各项措施对总碳减排的贡献比例</p>
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="carbonDetailChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="data-analysis">
+                            <h4>减排分析</h4>
+                            <ul class="feature-list">
+                                <li>总碳减排量：2025年上半年累计减排125吨CO₂</li>
+                                <li>节水减排贡献最大，占总减排量的40%</li>
+                                <li>无农药种植减排贡献25%，主要减少化学品生产排放</li>
+                                <li>本地化运输减少食物里程，贡献20%减排</li>
+                                <li>能源优化（LED灯光、智能控制）贡献15%</li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+                financial: `
+                    <div class="data-insight-container">
+                        <div class="data-chart">
+                            <h4>财务数据趋势</h4>
+                            <p>2025年1-6月营收与利润趋势（单位：万元）</p>
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="financialDetailChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="data-analysis">
+                            <h4>财务分析</h4>
+                            <ul class="feature-list">
+                                <li>上半年总营收：1,250万元，完成年度目标的52%</li>
+                                <li>毛利率：68%，较传统咖啡店高25个百分点</li>
+                                <li>净利润率：32%，主要得益于技术溢价</li>
+                                <li>营收构成：寄养服务占45%，咖啡销售占35%，其他占20%</li>
+                                <li>投资回报率：预计18个月收回初始投资</li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+                regional: `
+                    <div class="data-insight-container">
+                        <div class="data-chart">
+                            <h4>区域业绩分析</h4>
+                            <p>各城市分店2025年上半年业绩对比</p>
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="regionalDetailChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="data-analysis">
+                            <h4>区域分析</h4>
+                            <ul class="feature-list">
+                                <li>上海旗舰店业绩领先，占总营收的38%</li>
+                                <li>北京分店用户增长最快，月均增长25%</li>
+                                <li>深圳分店科技体验收入占比最高，达42%</li>
+                                <li>杭州种植中心供应全国80%的咖啡豆需求</li>
+                                <li>区域扩张计划：2025下半年新增3个城市分店</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            };
+        }
+        
+        // 加载数据子页面内容
+        function loadDataSubpageContent(trend) {
+            const contentContainer = document.getElementById('dataSubpageContent');
+            contentContainer.innerHTML = window.dataSubpageContents[trend] || '<p>数据加载中...</p>';
+            
+            // 初始化子页面图表
+            setTimeout(() => {
+                initDataSubpageCharts(trend);
+            }, 100);
+        }
+        
+        // 初始化数据子页面图表
+        function initDataSubpageCharts(trend) {
+            switch(trend) {
+                case 'market':
+                    const marketDetailCtx = document.getElementById('marketDetailChart').getContext('2d');
+                    new Chart(marketDetailCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                            datasets: [{
+                                label: '市场规模 (亿元)',
+                                data: [3.2, 3.8, 4.5, 5.2, 6.1, 7.0],
+                                borderColor: '#006241',
+                                backgroundColor: 'rgba(0, 98, 65, 0.1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                    break;
+                    
+                case 'user':
+                    const userDetailCtx = document.getElementById('userDetailChart').getContext('2d');
+                    new Chart(userDetailCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                            datasets: [{
+                                label: '新增用户',
+                                data: [120, 190, 300, 500, 700, 900],
+                                backgroundColor: '#cba258'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                    break;
+                    
+                case 'carbon':
+                    const carbonDetailCtx = document.getElementById('carbonDetailChart').getContext('2d');
+                    new Chart(carbonDetailCtx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['节水减排', '无农药减排', '本地化运输减排', '能源优化减排'],
+                            datasets: [{
+                                data: [40, 25, 20, 15],
+                                backgroundColor: ['#006241', '#1e3932', '#cba258', '#8a6e3e']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                    break;
+                    
+                case 'financial':
+                    const financialDetailCtx = document.getElementById('financialDetailChart').getContext('2d');
+                    new Chart(financialDetailCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                            datasets: [
+                                {
+                                    label: '营收',
+                                    data: [180, 195, 210, 230, 250, 285],
+                                    backgroundColor: '#006241'
+                                },
+                                {
+                                    label: '利润',
+                                    data: [58, 63, 68, 74, 80, 91],
+                                    backgroundColor: '#cba258'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                    break;
+                    
+                case 'regional':
+                    const regionalDetailCtx = document.getElementById('regionalDetailChart').getContext('2d');
+                    new Chart(regionalDetailCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['上海', '北京', '深圳', '杭州'],
+                            datasets: [{
+                                label: '营收 (万元)',
+                                data: [475, 280, 320, 175],
+                                backgroundColor: ['#006241', '#1e3932', '#cba258', '#8a6e3e']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                    break;
+            }
+        }
+        
+        // 新闻详情展开/收起
+        function toggleNewsDetails(newsId) {
+            const detailsElement = document.getElementById(newsId);
+            detailsElement.classList.toggle('active');
+            
+            // 更新按钮文本
+            const button = detailsElement.previousElementSibling.previousElementSibling;
+            if (detailsElement.classList.contains('active')) {
+                button.textContent = '收起详情';
+            } else {
+                button.textContent = '阅读更多';
+            }
+        }
+        
+        // 卡片悬停效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.about-card, .plan-card, .news-card, .dashboard-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px)';
+                    this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.1)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+                });
+            });
+        });
+        
+        // 淡入动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // 观察需要动画的元素
+            const animatedElements = document.querySelectorAll('.about-card, .plan-card, .news-card, .dashboard-card, .experience-grid > div');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
